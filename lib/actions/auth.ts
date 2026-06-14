@@ -105,9 +105,10 @@ export async function updateEmployeeRole(employeeId: string, currentRole: string
     .update({ role: nextRole })
     .eq('id', employeeId)
 
-  if (error) return { error: error.message }
+  if (error) {
+    throw new Error(error.message)
+  }
 
   const { revalidatePath } = await import('next/cache')
   revalidatePath('/dashboard/admin/employees')
-  return { success: true }
 }
