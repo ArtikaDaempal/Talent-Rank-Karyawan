@@ -8,9 +8,15 @@ export async function login(formData: FormData) {
   const password = formData.get('password') as string
   const supabase = await createClient()
 
-  const { error } = await supabase.auth.signInWithPassword({ email, password })
+  const { error } = await supabase.auth
+    .signInWithPassword({ email, password })
+    .catch((error: Error) => ({ error }))
 
   if (error) {
+    if (error.message.includes('invalid header value')) {
+      return { error: 'Sesi login lama tidak valid. Muat ulang halaman lalu coba masuk lagi.' }
+    }
+
     return { error: error.message }
   }
 
